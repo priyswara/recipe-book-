@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Recipe Book</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #fff8f0;
+    color: #46352b;
+}
+
+header {
+    background: #a64b2a;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 35px;
+}
+
+nav {
+    background: #71371f;
+    padding: 15px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 15px;
+}
+
+.hero {
+    text-align: center;
+    padding: 65px 20px;
+    background: #f7ddc5;
+}
+
+.hero h2 {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.search {
+    text-align: center;
+    padding: 25px;
+}
+
+.search input {
+    width: 80%;
+    max-width: 450px;
+    padding: 13px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+}
+
+.categories {
+    text-align: center;
+    padding: 15px;
+}
+
+.categories button {
+    background: #a64b2a;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    margin: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.recipes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 25px;
+    padding: 25px 6%;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px #00000015;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+.card h3 {
+    margin: 15px;
+}
+
+.card p {
+    margin-bottom: 15px;
+}
+
+.card button {
+    background: #a64b2a;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.details {
+    background: #f7ddc5;
+    margin: 25px 6%;
+    padding: 25px;
+    border-radius: 15px;
+    display: none;
+}
+
+.details h2, .details h3 {
+    margin-bottom: 12px;
+}
+
+.details p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.details ul, .details ol {
+    margin: 10px 0 20px 25px;
+    line-height: 1.8;
+}
+
+footer {
+    background: #71371f;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🍴 My Recipe Book</h1>
+    <p>Discover Delicious Recipes Every Day!</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#recipes">Recipes</a>
+    <a href="#categories">Categories</a>
+</nav>
+
+<section class="hero" id="home">
+    <h2>Welcome to My Kitchen ❤️</h2>
+    <p>Find your favourite recipes and cook something amazing!</p>
+</section>
+
+<section class="search">
+    <input type="text" id="searchInput"
+    placeholder="🔍 Search your favourite recipe..."
+    oninput="displayRecipes()">
+</section>
+
+<section class="categories" id="categories">
+    <button onclick="filterCategory('All')">All</button>
+    <button onclick="filterCategory('Breakfast')">Breakfast</button>
+    <button onclick="filterCategory('Lunch')">Lunch</button>
+    <button onclick="filterCategory('Dessert')">Dessert</button>
+</section>
+
+<h2 style="text-align:center; margin:25px;">
+    Our Delicious Recipes 🍲
+</h2>
+
+<section class="recipes" id="recipes"></section>
+
+<section class="details" id="details"></section>
+
+<footer>
+    <p>© 2026 My Recipe Book | Made with ❤️</p>
+</footer>
+
+<script>
+
+const recipes = [
+{
+    name: "Masala Dosa",
+    category: "Breakfast",
+    image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=500",
+    time: "30 minutes",
+    ingredients: ["Rice batter", "Potatoes", "Onion", "Mustard seeds", "Oil"],
+    steps: ["Prepare dosa batter.", "Cook potatoes with spices.", "Spread batter on a hot pan.", "Add potato filling and fold."]
+},
+{
+    name: "Vegetable Biryani",
+    category: "Lunch",
+    image: "https://images.unsplash.com/photo-1563379091339-03246963d96c?w=500",
+    time: "45 minutes",
+    ingredients: ["Basmati rice", "Mixed vegetables", "Onions", "Tomatoes", "Biryani masala"],
+    steps: ["Wash and soak rice.", "Cook onions and vegetables with spices.", "Add rice and water.", "Cook until rice is fluffy."]
+},
+{
+    name: "Chocolate Cake",
+    category: "Dessert",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500",
+    time: "50 minutes",
+    ingredients: ["Flour", "Cocoa powder", "Sugar", "Milk", "Baking powder"],
+    steps: ["Mix dry ingredients.", "Add milk and combine.", "Pour into a cake tin.", "Bake at 180°C until cooked."]
+},
+{
+    name: "Idli and Sambar",
+    category: "Breakfast",
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500",
+    time: "30 minutes",
+    ingredients: ["Idli batter", "Toor dal", "Tomato", "Vegetables", "Sambar powder"],
+    steps: ["Steam idlis until cooked.", "Cook dal and vegetables.", "Add sambar powder and simmer.", "Serve hot."]
+},
+{
+    name: "Paneer Curry",
+    category: "Lunch",
+    image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500",
+    time: "35 minutes",
+    ingredients: ["Paneer", "Tomatoes", "Onions", "Cream", "Spices"],
+    steps: ["Prepare onion tomato gravy.", "Add spices.", "Add paneer cubes.", "Simmer and serve."]
+},
+{
+    name: "Strawberry Dessert",
+    category: "Dessert",
+    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500",
+    time: "20 minutes",
+    ingredients: ["Strawberries", "Cream", "Sugar", "Vanilla"],
+    steps: ["Wash and cut strawberries.", "Whip cream with sugar.", "Layer strawberries and cream.", "Chill and serve."]
+}
+];
+
+let currentCategory = "All";
+
+function displayRecipes() {
+    const search = document.getElementById("searchInput")
+        .value.toLowerCase();
+
+    const filtered = recipes.filter(recipe =>
+        recipe.name.toLowerCase().includes(search) &&
+        (currentCategory === "All" ||
+        recipe.category === currentCategory)
+    );
+
+    const container = document.getElementById("recipes");
+
+    if (filtered.length === 0) {
+        container.innerHTML = "<p>No recipes found.</p>";
+        return;
+    }
+
+    container.innerHTML = filtered.map(recipe => {
+        const index = recipes.indexOf(recipe);
+
+        return `
+        <div class="card">
+            <img src="${recipe.image}" alt="${recipe.name}">
+            <h3>${recipe.name}</h3>
+            <p>⏰ ${recipe.time}</p>
+            <p>${recipe.category}</p>
+            <button onclick="showRecipe(${index})">
+                View Recipe
+            </button>
+        </div>`;
+    }).join("");
+}
+
+function filterCategory(category) {
+    currentCategory = category;
+    displayRecipes();
+    document.getElementById("details").style.display = "none";
+}
+
+function showRecipe(index) {
+    const recipe = recipes[index];
+
+    const details = document.getElementById("details");
+
+    details.style.display = "block";
+
+    details.innerHTML = `
+        <h2>${recipe.name} 🍽️</h2>
+        <p>⏰ Cooking Time: ${recipe.time}</p>
+
+        <h3>Ingredients:</h3>
+        <ul>
+            ${recipe.ingredients.map(item => `<li>${item}</li>`).join("")}
+        </ul>
+
+        <h3>Preparation Steps:</h3>
+        <ol>
+            ${recipe.steps.map(step => `<li>${step}</li>`).join("")}
+        </ol>
+    `;
+
+    details.scrollIntoView({behavior: "smooth"});
+}
+
+displayRecipes();
+
+</script>
+
+</body>
+</html>
